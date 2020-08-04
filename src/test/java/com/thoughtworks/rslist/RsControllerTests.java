@@ -59,12 +59,24 @@ class RsControllerTests {
     }
 
     @Test
-    @Order(5)
+    @Order(6)
     void shouldModifyRsEvent() throws Exception {
         mockMvc.perform(post("/rs/modify/1").content("已修改事件"))
                 .andExpect(status().isOk());
         mockMvc.perform(get("/rs/1"))
                 .andExpect(content().string("已修改事件"))
+                .andExpect(status().isOk());
+    }
+    @Test
+    @Order(5)
+    void shouldDeleteRsEvent() throws Exception {
+        mockMvc.perform(get("/rs/list"))
+                .andExpect(content().string("[第一条事件, 第二条事件, 第三条事件, 第四条事件]"))
+                .andExpect(status().isOk());
+        mockMvc.perform(post("/rs/delete/1"))
+                .andExpect(status().isOk());
+        mockMvc.perform(get("/rs/list"))
+                .andExpect(content().string("[第一条事件, 第三条事件, 第四条事件]"))
                 .andExpect(status().isOk());
     }
 }
