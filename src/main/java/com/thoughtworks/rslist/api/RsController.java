@@ -24,7 +24,7 @@ public class RsController {
     @GetMapping("/rs/list")
     public ResponseEntity<List<RsEvent>> getRsListBetween(@RequestParam(required = false) Integer start,
                                                           @RequestParam(required = false) Integer end) {
-        if(start != null && end != null){
+        if (start != null && end != null) {
             if (start < 0 || end > rsList.size()) {
                 throw new InvalidJarIndexException("invalid request param");
             }
@@ -48,6 +48,9 @@ public class RsController {
 
     @GetMapping("/rs/{index}")
     public ResponseEntity<RsEvent> getRsListByIndex(@PathVariable Integer index) {
+        if (index < 0 || index > rsList.size()) {
+            throw new InvalidJarIndexException("invalid index");
+        }
         return ResponseEntity.ok(rsList.get(index));
     }
 

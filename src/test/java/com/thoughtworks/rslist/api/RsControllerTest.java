@@ -122,6 +122,10 @@ class RsControllerTest {
                 .andExpect(jsonPath("$.eventName", is("第三条事件")))
                 .andExpect(jsonPath("$", not(hasKey("user"))))
                 .andExpect(status().isOk());
+
+        mockMvc.perform(get("/rs/-1"))
+                .andExpect(jsonPath("$.error", is("invalid index")))
+                .andExpect(status().isBadRequest());
     }
 
     @Test
