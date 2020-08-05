@@ -21,13 +21,13 @@ public class UserController {
     @PostMapping("/user")
     public static ResponseEntity<String> register(@RequestBody @Valid User user) {
         users.add(user);
-        HttpHeaders headers= new  HttpHeaders();
-        headers.set("index", String.valueOf(users.size()-1));
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("index", String.valueOf(users.size() - 1));
         return new ResponseEntity(headers, HttpStatus.CREATED);
     }
 
     @GetMapping("/user/getAll")
-    public static ResponseEntity<List<User>> getAllUsers(){
+    public static ResponseEntity<List<User>> getAllUsers() {
         return ResponseEntity.ok(users);
     }
 }
