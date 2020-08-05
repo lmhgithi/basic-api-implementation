@@ -40,4 +40,12 @@ public class User {
         this.email = email;
         this.phone = phone;
     }
+
+    public User(User user){
+        this.name = user.name;
+        this.gender = user.gender;
+        this.age = user.age;
+        this.email = user.email;
+        this.phone = user.phone;
+    }
 }

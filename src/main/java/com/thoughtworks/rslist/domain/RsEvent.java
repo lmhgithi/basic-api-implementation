@@ -2,6 +2,7 @@ package com.thoughtworks.rslist.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import sun.misc.InvalidJarIndexException;
 
 import javax.validation.Valid;
 import java.util.Optional;

@@ -1,7 +1,11 @@
 package com.thoughtworks.rslist.exception;
 
-public class CommenError {
+public class CommonError extends Exception {
     private String error;
+
+    public CommonError() {
+        super();
+    }
 
     public String getError() {
         return error;

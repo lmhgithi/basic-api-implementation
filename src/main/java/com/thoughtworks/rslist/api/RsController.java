@@ -1,16 +1,12 @@
 package com.thoughtworks.rslist.api;
-
 import com.thoughtworks.rslist.domain.RsEvent;
-import javassist.tools.web.BadHttpRequest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.HttpClientErrorException;
 import sun.misc.InvalidJarIndexException;
 
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
+import javax.validation.Valid;
 import java.lang.Exception;
 
 import java.util.LinkedList;
@@ -36,7 +32,7 @@ public class RsController {
     }
 
     @PostMapping("/rs/event")
-    public ResponseEntity createRsEvent(@RequestBody RsEvent rsEvent) {
+    public ResponseEntity createRsEvent(@RequestBody @Valid RsEvent rsEvent) {
         rsList.add(rsEvent);
         if (!UserController.users.contains(rsEvent.getUser())) {
             UserController.register(rsEvent.getUser());

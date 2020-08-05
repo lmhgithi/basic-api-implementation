@@ -5,20 +5,22 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseBody;
 import sun.misc.InvalidJarIndexException;
+
+import java.security.InvalidParameterException;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
     @ExceptionHandler({InvalidJarIndexException.class, MethodArgumentNotValidException.class})
     public ResponseEntity exceptionHandler(Exception ex) {
         String errorMessage;
-        CommenError commenError = new CommenError();
-//        if(ex instanceof InvalidJarIndexException){
-//            errorMessage = ex.getMessage();
-//        }
-        errorMessage = ex.getMessage();
-        commenError.setError(errorMessage);
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(commenError);
+        CommonError commonError = new CommonError();
+        if(ex instanceof MethodArgumentNotValidException){
+            errorMessage = "invalid param";
+        }else{
+            errorMessage = ex.getMessage();
+        }
+        commonError.setError(errorMessage);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(commonError);
     }
 }

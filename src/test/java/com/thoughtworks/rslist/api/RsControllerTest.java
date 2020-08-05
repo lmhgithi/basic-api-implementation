@@ -1,5 +1,6 @@
 package com.thoughtworks.rslist.api;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.thoughtworks.rslist.api.RsController;
 import com.thoughtworks.rslist.api.UserController;
@@ -110,6 +111,15 @@ class RsControllerTest {
                 .andExpect(jsonPath("$[4].keyword", is("无")))
                 .andExpect(status().isOk());
         assertEquals(4, UserController.users.size());
+
+        String requestJson3 = "{\"eventName\":\"第五条事件\"," +
+                " \"keyword\":\"无\"," +
+                "\"user\" :{\"user_name\":\"Lily4\", \"user_gender\":\"male\", \"user_age\":10, \"user_email\":\"d@b.com\", \"user_phone\":\"12345678904\"}}";
+
+        mockMvc.perform(post("/rs/event")
+                .content(requestJson3).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.error", is("invalid param")))
+                .andExpect(status().isBadRequest());
     }
 
     @Test
