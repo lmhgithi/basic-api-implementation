@@ -39,6 +39,13 @@ class UserControllerTest {
                 .andExpect(status().isCreated());
         assertEquals(1, UserController.users.size());
         assertEquals("Lily", UserController.users.get(0).getName());
+
+        User user2 = new User("Lily", "male", 15, "a@b.com", "12345678901");
+        String userJson2 = objectMapper.writeValueAsString(user2);
+        mockMvc.perform(post("/user")
+                .content(userJson2).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.error", is("invalid user")))
+                .andExpect(status().isBadRequest());
     }
 
     @Test

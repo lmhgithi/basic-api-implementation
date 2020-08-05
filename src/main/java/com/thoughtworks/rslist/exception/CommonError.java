@@ -3,8 +3,9 @@ package com.thoughtworks.rslist.exception;
 public class CommonError extends Exception {
     private String error;
 
-    public CommonError() {
-        super();
+    public CommonError(String errorMessage) {
+        super(errorMessage);
+        this.error = errorMessage;
     }
 
     public String getError() {
