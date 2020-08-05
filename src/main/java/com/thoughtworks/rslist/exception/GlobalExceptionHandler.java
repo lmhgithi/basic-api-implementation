@@ -18,13 +18,13 @@ public class GlobalExceptionHandler {
         String errorMessage = null;
 
         if(ex instanceof MethodArgumentNotValidException){
-            if(((MethodArgumentNotValidException) ex).getBindingResult().getTarget() instanceof RsEvent){
+            MethodArgumentNotValidException methodArgumentNotValidException = (MethodArgumentNotValidException) ex;
+            if(methodArgumentNotValidException.getBindingResult().getTarget() instanceof RsEvent){
                 errorMessage = "invalid param";
             }
-            if(((MethodArgumentNotValidException) ex).getBindingResult().getTarget() instanceof User){
+            if(methodArgumentNotValidException.getBindingResult().getTarget() instanceof User){
                 errorMessage = "invalid user";
             }
-
         }else{
             errorMessage = ex.getMessage();
         }
