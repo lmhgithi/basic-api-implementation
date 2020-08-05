@@ -105,4 +105,5 @@ class RsControllerTests {
                 .andExpect(jsonPath("$[1].eventName", is("第三条事件")))
                 .andExpect(status().isOk());
     }
+
 }
