@@ -5,14 +5,13 @@ import com.thoughtworks.rslist.api.RsController;
 import com.thoughtworks.rslist.api.UserController;
 import com.thoughtworks.rslist.domain.RsEvent;
 import com.thoughtworks.rslist.domain.User;
-import org.aspectj.lang.annotation.Before;
 import org.junit.jupiter.api.*;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+
+import java.util.LinkedList;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -27,8 +26,19 @@ class RsControllerTests {
     //    @Autowired
     MockMvc mockMvc;
 
+    @BeforeAll
+    static void initUser(){
+        UserController.users.add(new User("Lily1", "male", 18, "a@b.com", "12345678901"));
+        UserController.users.add(new User("Lily2", "female", 20, "b@b.com", "12345678902"));
+        UserController.users.add(new User("Lily3", "male", 21, "c@b.com", "12345678903"));
+    }
     @BeforeEach
     public void init() {
+        RsController.rsList = new LinkedList<RsEvent>() {{
+            add(new RsEvent("第一条事件", "无", UserController.users.get(0)));
+            add(new RsEvent("第二条事件", "无", UserController.users.get(1)));
+            add(new RsEvent("第三条事件", "无", UserController.users.get(2)));
+        }};
         mockMvc = MockMvcBuilders.standaloneSetup(new RsController()).build();
     }
 

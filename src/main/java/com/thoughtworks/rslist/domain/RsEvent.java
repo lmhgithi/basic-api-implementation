@@ -1,11 +1,12 @@
 package com.thoughtworks.rslist.domain;
 
+import javax.validation.Valid;
 import java.util.Optional;
 
 public class RsEvent {
     private String eventName;
     private String keyword;
-    private User user;
+    private @Valid User user;
 
     public RsEvent() {
     }
