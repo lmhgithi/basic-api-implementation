@@ -18,7 +18,7 @@ public class RsController {
     public ResponseEntity<List<RsEvent>> getRsListBetween(@RequestParam(required = false) Integer start,
                                                           @RequestParam(required = false) Integer end) {
 
-        if(start != null && end != null) {
+        if (start != null && end != null) {
             new ResponseEntity<>(rsList.subList(start - 1, end), HttpStatus.OK);
         }
         return ResponseEntity.ok(rsList);
@@ -30,8 +30,8 @@ public class RsController {
         if (!UserController.users.contains(rsEvent.getUser())) {
             UserController.register(rsEvent.getUser());
         }
-        HttpHeaders headers= new  HttpHeaders();
-        headers.set("index", String.valueOf(rsList.size()-1));
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("index", String.valueOf(rsList.size() - 1));
         return new ResponseEntity(headers, HttpStatus.CREATED);
     }
 
@@ -45,7 +45,7 @@ public class RsController {
         rsList.get(index).setEventName(rsEvent.getEventName());
         rsList.get(index).setKeyword(rsEvent.getKeyword());
 
-        HttpHeaders headers= new  HttpHeaders();
+        HttpHeaders headers = new HttpHeaders();
         headers.set("index", String.valueOf(index));
         return new ResponseEntity(headers, HttpStatus.CREATED);
     }
@@ -53,7 +53,7 @@ public class RsController {
     @PostMapping("/rs/delete/{index}")
     public ResponseEntity deleteRsEvent(@PathVariable int index) {
         rsList.remove(index);
-        HttpHeaders headers= new  HttpHeaders();
+        HttpHeaders headers = new HttpHeaders();
         headers.set("index", String.valueOf(index));
         return new ResponseEntity(headers, HttpStatus.CREATED);
     }

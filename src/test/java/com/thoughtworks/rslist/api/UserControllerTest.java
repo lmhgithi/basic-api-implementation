@@ -38,6 +38,7 @@ class UserControllerTest {
                 .andExpect(header().string("index", String.valueOf(UserController.users.size() - 1)))
                 .andExpect(status().isCreated());
         assertEquals(1, UserController.users.size());
+        assertEquals("Lily", UserController.users.get(0).getName());
     }
 
     @Test
