@@ -1,10 +1,12 @@
 package com.thoughtworks.rslist.api;
+
+import com.thoughtworks.rslist.exception.InvalidParamException;
 import com.thoughtworks.rslist.domain.RsEvent;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import sun.misc.InvalidJarIndexException;
+import org.springframework.validation.BindingResult;
 
 import javax.validation.Valid;
 import java.lang.Exception;
@@ -19,10 +21,10 @@ public class RsController {
 
     @GetMapping("/rs/list")
     public ResponseEntity<List<RsEvent>> getRsListBetween(@RequestParam(required = false) Integer start,
-                                                          @RequestParam(required = false) Integer end) {
+                                                          @RequestParam(required = false) Integer end) throws InvalidParamException {
         if (start != null && end != null) {
             if (start < 0 || end > rsList.size()) {
-                throw new InvalidJarIndexException("invalid request param");
+                throw new InvalidParamException("invalid request param");
             }
             return ResponseEntity.ok(rsList.subList(start - 1, end));
         }
@@ -32,10 +34,13 @@ public class RsController {
     }
 
     @PostMapping("/rs/event")
-    public ResponseEntity createRsEvent(@RequestBody @Valid RsEvent rsEvent) {
+    public ResponseEntity createRsEvent(@RequestBody @Valid RsEvent rsEvent, BindingResult result) throws InvalidParamException {
+        if (result.hasErrors()) {
+            throw new InvalidParamException("invalid param");
+        }
         rsList.add(rsEvent);
         if (!UserController.users.contains(rsEvent.getUser())) {
-            UserController.register(rsEvent.getUser());
+            UserController.users.add(rsEvent.getUser());
         }
         HttpHeaders headers = new HttpHeaders();
         headers.set("index", String.valueOf(rsList.size() - 1));
@@ -43,9 +48,9 @@ public class RsController {
     }
 
     @GetMapping("/rs/{index}")
-    public ResponseEntity<RsEvent> getRsListByIndex(@PathVariable Integer index) {
+    public ResponseEntity<RsEvent> getRsListByIndex(@PathVariable Integer index) throws InvalidParamException {
         if (index < 0 || index > rsList.size()) {
-            throw new InvalidJarIndexException("invalid index");
+            throw new InvalidParamException("invalid index");
         }
         return ResponseEntity.ok(rsList.get(index));
     }
