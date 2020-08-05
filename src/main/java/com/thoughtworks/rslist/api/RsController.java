@@ -14,24 +14,31 @@ import java.util.stream.Stream;
 
 @RestController
 public class RsController {
-    private final List<RsEvent> rsList = new LinkedList<RsEvent>() {{
-        add(new RsEvent("第一条事件", "无", new User("Lily", "male", 18, "a@b.com", "12345678901")));
-        add(new RsEvent("第二条事件", "无", new User("Lily2", "female", 20, "b@b.com", "12345678902")));
-        add(new RsEvent("第三条事件", "无", new User("Lily3", "male", 21, "c@b.com", "12345678903")));
+    private static final List<RsEvent> rsList = new LinkedList<RsEvent>() {{
+        UserController.users.add(new User("Lily1", "male", 18, "a@b.com", "12345678901"));
+        UserController.users.add(new User("Lily2", "female", 20, "b@b.com", "12345678902"));
+        UserController.users.add(new User("Lily3", "male", 21, "c@b.com", "12345678903"));
+        add(new RsEvent("第一条事件", "无", UserController.users.get(0)));
+        add(new RsEvent("第二条事件", "无", UserController.users.get(1)));
+        add(new RsEvent("第三条事件", "无", UserController.users.get(2)));
     }};
 
     @GetMapping("/rs/list")
     public List<RsEvent> getRsListBetween(@RequestParam(required = false) Integer start,
                                           @RequestParam(required = false) Integer end) {
-        if (start == null || end == null) {
-            return rsList;
+
+        if(start != null && end != null) {
+            return rsList.subList(start - 1, end);
         }
-        return rsList.subList(start - 1, end);
+        return rsList;
     }
 
     @PostMapping("/rs/event")
     public void createRsEvent(@RequestBody RsEvent rsEvent) {
         rsList.add(rsEvent);
+        if (!UserController.users.contains(rsEvent.getUser())) {
+            UserController.register(rsEvent.getUser());
+        }
     }
 
     @GetMapping("/rs/{index}")

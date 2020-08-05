@@ -14,7 +14,7 @@ public class UserController {
     public static List<User> users = new ArrayList<>();
 
     @PostMapping("/user")
-    public void register(@RequestBody @Valid User user) {
+    public static void register(@RequestBody @Valid User user) {
         users.add(user);
     }
 }

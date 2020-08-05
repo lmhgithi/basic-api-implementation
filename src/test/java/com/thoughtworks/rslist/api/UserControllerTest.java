@@ -11,6 +11,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -34,6 +35,7 @@ class UserControllerTest {
         mockMvc.perform(post("/user")
                 .content(userJson).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
+        assertEquals(1, UserController.users.size());
     }
 
     @Test

@@ -2,6 +2,7 @@ package com.thoughtworks.rslist;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.thoughtworks.rslist.api.RsController;
+import com.thoughtworks.rslist.api.UserController;
 import com.thoughtworks.rslist.domain.RsEvent;
 import com.thoughtworks.rslist.domain.User;
 import org.aspectj.lang.annotation.Before;
@@ -14,6 +15,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -35,6 +37,7 @@ class RsControllerTests {
         mockMvc.perform(get("/rs/list"))
                 .andExpect(jsonPath("$[0].eventName", is("第一条事件")))
                 .andExpect(jsonPath("$[0].keyword", is("无")))
+                .andExpect(jsonPath("$[0].user.name", is("Lily1")))
                 .andExpect(jsonPath("$[1].eventName", is("第二条事件")))
                 .andExpect(jsonPath("$[1].keyword", is("无")))
                 .andExpect(jsonPath("$[2].eventName", is("第三条事件")))
@@ -67,7 +70,24 @@ class RsControllerTests {
                 .andExpect(jsonPath("$[2].eventName", is("第三条事件")))
                 .andExpect(jsonPath("$[2].keyword", is("无")))
                 .andExpect(jsonPath("$[3].eventName", is("第四条事件")))
-                .andExpect(jsonPath("$[3].keyword", is("无")));
+                .andExpect(jsonPath("$[3].keyword", is("无")))
+                .andExpect(jsonPath("$[3].user.name", is("Lily4")))
+                .andExpect(status().isOk());
+        assertEquals(4, UserController.users.size());
+
+        RsEvent rsEvent2 = new RsEvent("第五条事件", "无", new User("Lily4", "male", 22, "d@b.com", "12345678904"));
+        ObjectMapper objMapper2 = new ObjectMapper();
+        String requestJson2 = objMapper2.writeValueAsString(rsEvent2);
+
+        mockMvc.perform(post("/rs/event")
+                .content(requestJson2).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+        mockMvc.perform(get("/rs/list"))
+                .andExpect(jsonPath("$[4].eventName", is("第五条事件")))
+                .andExpect(jsonPath("$[4].keyword", is("无")))
+                .andExpect(jsonPath("$[4].user.name", is("Lily4")))
+                .andExpect(status().isOk());
+        assertEquals(4, UserController.users.size());
     }
 
     @Test
