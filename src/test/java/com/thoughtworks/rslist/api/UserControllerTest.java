@@ -9,6 +9,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.result.JsonPathResultMatchers;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -34,7 +35,8 @@ class UserControllerTest {
         String userJson = objectMapper.writeValueAsString(user);
         mockMvc.perform(post("/user")
                 .content(userJson).contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
+                .andExpect(header().string("index", String.valueOf(UserController.users.size()-1)))
+                .andExpect(status().isCreated());
         assertEquals(1, UserController.users.size());
     }
 
@@ -87,7 +89,7 @@ class UserControllerTest {
         String userJson3 = objectMapper.writeValueAsString(user3);
         mockMvc.perform(post("/user")
                 .content(userJson3).contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
+                .andExpect(status().isCreated());
     }
 
     @Test
@@ -109,7 +111,7 @@ class UserControllerTest {
         String userJson3 = objectMapper.writeValueAsString(user3);
         mockMvc.perform(post("/user")
                 .content(userJson3).contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
+                .andExpect(status().isCreated());
     }
 
     @Test
@@ -131,6 +133,6 @@ class UserControllerTest {
         String userJson3 = objectMapper.writeValueAsString(user3);
         mockMvc.perform(post("/user")
                 .content(userJson3).contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
+                .andExpect(status().isCreated());
     }
 }

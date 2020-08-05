@@ -1,6 +1,7 @@
 package com.thoughtworks.rslist.api;
 
 import com.thoughtworks.rslist.domain.RsEvent;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -29,7 +30,9 @@ public class RsController {
         if (!UserController.users.contains(rsEvent.getUser())) {
             UserController.register(rsEvent.getUser());
         }
-        return ResponseEntity.ok().build();
+        HttpHeaders headers= new  HttpHeaders();
+        headers.set("index", String.valueOf(rsList.size()-1));
+        return new ResponseEntity(headers, HttpStatus.CREATED);
     }
 
     @GetMapping("/rs/{index}")
@@ -41,12 +44,17 @@ public class RsController {
     public ResponseEntity modifyRsEvent(@PathVariable int index, @RequestBody RsEvent rsEvent) {
         rsList.get(index).setEventName(rsEvent.getEventName());
         rsList.get(index).setKeyword(rsEvent.getKeyword());
-        return ResponseEntity.ok().build();
+
+        HttpHeaders headers= new  HttpHeaders();
+        headers.set("index", String.valueOf(index));
+        return new ResponseEntity(headers, HttpStatus.CREATED);
     }
 
     @PostMapping("/rs/delete/{index}")
     public ResponseEntity deleteRsEvent(@PathVariable int index) {
         rsList.remove(index);
-        return ResponseEntity.ok().build();
+        HttpHeaders headers= new  HttpHeaders();
+        headers.set("index", String.valueOf(index));
+        return new ResponseEntity(headers, HttpStatus.CREATED);
     }
 }
