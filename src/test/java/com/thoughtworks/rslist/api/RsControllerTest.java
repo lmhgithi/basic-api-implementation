@@ -63,6 +63,10 @@ class RsControllerTest {
                 .andExpect(jsonPath("$[0].eventName", is("第一条事件")))
                 .andExpect(jsonPath("$[1].eventName", is("第二条事件")))
                 .andExpect(status().isOk());
+
+        mockMvc.perform(get("/rs/list?start=1&end=100"))
+                .andExpect(jsonPath("$.error", is("invalid request param")))
+                .andExpect(status().isBadRequest());
     }
 
     @Test

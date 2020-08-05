@@ -1,10 +1,17 @@
 package com.thoughtworks.rslist.api;
 
 import com.thoughtworks.rslist.domain.RsEvent;
+import javassist.tools.web.BadHttpRequest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.HttpClientErrorException;
+import sun.misc.InvalidJarIndexException;
+
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import java.lang.Exception;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -17,10 +24,14 @@ public class RsController {
     @GetMapping("/rs/list")
     public ResponseEntity<List<RsEvent>> getRsListBetween(@RequestParam(required = false) Integer start,
                                                           @RequestParam(required = false) Integer end) {
-
-        if (start != null && end != null) {
-            new ResponseEntity<>(rsList.subList(start - 1, end), HttpStatus.OK);
+        if(start != null && end != null){
+            if (start < 0 || end > rsList.size()) {
+                throw new InvalidJarIndexException("invalid request param");
+            }
+            return ResponseEntity.ok(rsList.subList(start - 1, end));
         }
+
+
         return ResponseEntity.ok(rsList);
     }
 
