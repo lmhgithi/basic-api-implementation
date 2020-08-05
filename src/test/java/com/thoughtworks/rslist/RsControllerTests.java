@@ -27,11 +27,12 @@ class RsControllerTests {
     MockMvc mockMvc;
 
     @BeforeAll
-    static void initUser(){
+    static void initUser() {
         UserController.users.add(new User("Lily1", "male", 18, "a@b.com", "12345678901"));
         UserController.users.add(new User("Lily2", "female", 20, "b@b.com", "12345678902"));
         UserController.users.add(new User("Lily3", "male", 21, "c@b.com", "12345678903"));
     }
+
     @BeforeEach
     public void init() {
         RsController.rsList = new LinkedList<RsEvent>() {{
