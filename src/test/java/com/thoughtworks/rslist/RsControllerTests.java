@@ -3,6 +3,7 @@ package com.thoughtworks.rslist;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.thoughtworks.rslist.api.RsController;
 import com.thoughtworks.rslist.domain.RsEvent;
+import com.thoughtworks.rslist.domain.User;
 import org.aspectj.lang.annotation.Before;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,7 +52,7 @@ class RsControllerTests {
 
     @Test
     void shouldAddOneRsEvent() throws Exception {
-        RsEvent rsEvent = new RsEvent("第四条事件", "无");
+        RsEvent rsEvent = new RsEvent("第四条事件", "无", new User("Lily4", "male", 22, "d@b.com", "12345678904"));
         ObjectMapper objMapper = new ObjectMapper();
         String requestJson = objMapper.writeValueAsString(rsEvent);
 
@@ -82,7 +83,7 @@ class RsControllerTests {
     @Test
     void shouldModifyRsEvent() throws Exception {
 //        String requestJson = "{\"eventName\":\"已修改事件\",\"keyword\":\"已修改分类\"}";
-        RsEvent rsEvent = new RsEvent("已修改事件", "已修改分类");
+        RsEvent rsEvent = new RsEvent("已修改事件", "已修改分类", null);
         ObjectMapper objMapper = new ObjectMapper();
         String requestJson = objMapper.writeValueAsString(rsEvent);
 
