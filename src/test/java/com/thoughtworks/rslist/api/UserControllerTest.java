@@ -28,7 +28,7 @@ class UserControllerTest {
 
     @Test
     void shouldRegisterUser() throws Exception {
-        User user = new User("Lily", "male", 11, "a@b.com", "1234567890123");
+        User user = new User("Lily", "male", 11, "a@b.com", "12345678901");
         ObjectMapper objectMapper = new ObjectMapper();
         String userJson = objectMapper.writeValueAsString(user);
         mockMvc.perform(post("/user")
@@ -38,11 +38,22 @@ class UserControllerTest {
 
     @Test
     void nameShouldNotLongerThan8() throws Exception {
-        User user = new User("Lily56789", "male", 11, "a@b.com", "1234567890123");
+        User user = new User("Lily56789", "male", 11, "a@b.com", "12345678901");
         ObjectMapper objectMapper = new ObjectMapper();
         String userJson = objectMapper.writeValueAsString(user);
         mockMvc.perform(post("/user")
                 .content(userJson).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
     }
+
+    @Test
+    void nameShouldNotNull() throws Exception {
+        User user = new User(null, "male", 11, "a@b.com", "12345678901");
+        ObjectMapper objectMapper = new ObjectMapper();
+        String userJson = objectMapper.writeValueAsString(user);
+        mockMvc.perform(post("/user")
+                .content(userJson).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
+
 }
