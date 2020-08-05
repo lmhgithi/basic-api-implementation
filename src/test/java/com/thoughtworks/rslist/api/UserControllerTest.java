@@ -11,7 +11,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.JsonPathResultMatchers;
 
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -35,9 +35,22 @@ class UserControllerTest {
         String userJson = objectMapper.writeValueAsString(user);
         mockMvc.perform(post("/user")
                 .content(userJson).contentType(MediaType.APPLICATION_JSON))
-                .andExpect(header().string("index", String.valueOf(UserController.users.size()-1)))
+                .andExpect(header().string("index", String.valueOf(UserController.users.size() - 1)))
                 .andExpect(status().isCreated());
         assertEquals(1, UserController.users.size());
+    }
+
+    @Test
+    void shouldGetAllUsers() throws Exception {
+        User user = new User("Lily", "male", 18, "a@b.com", "12345678901");
+        UserController.users.add(user);
+        mockMvc.perform(get("/user/getAll"))
+                .andExpect(jsonPath("$[0]", hasKey("user_name")))
+                .andExpect(jsonPath("$[0]", hasKey("user_gender")))
+                .andExpect(jsonPath("$[0]", hasKey("user_age")))
+                .andExpect(jsonPath("$[0]", hasKey("user_email")))
+                .andExpect(jsonPath("$[0]", hasKey("user_phone")))
+                .andExpect(status().isOk());
     }
 
     @Test
