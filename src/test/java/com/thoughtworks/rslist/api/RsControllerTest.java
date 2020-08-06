@@ -7,6 +7,7 @@ import com.thoughtworks.rslist.api.UserController;
 import com.thoughtworks.rslist.domain.RsEvent;
 import com.thoughtworks.rslist.domain.User;
 import com.thoughtworks.rslist.entity.RsEntity;
+import com.thoughtworks.rslist.entity.UserEntity;
 import com.thoughtworks.rslist.repository.RsRepository;
 import com.thoughtworks.rslist.repository.UserRepository;
 import org.junit.jupiter.api.*;
@@ -29,6 +30,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 class RsControllerTest {
+    ObjectMapper objectMapper = new ObjectMapper();
     @Autowired
     MockMvc mockMvc;
     @Autowired
@@ -39,17 +41,55 @@ class RsControllerTest {
     @BeforeEach
     public void init() {
         userRepository.deleteAll();
-    }
-
-    @Test
-    void shouldGetRsList() throws Exception {
+        rsRepository.deleteAll();
+        userRepository.deleteAll();
+        UserEntity userEntity = UserEntity.builder()
+                .name("Lily")
+                .gender("female")
+                .age(18)
+                .email("a@b.com")
+                .phone("12345678901")
+                .vote(10)
+                .build();
+        userRepository.save(userEntity);
+        UserEntity userEntity2 = UserEntity.builder()
+                .name("Lily2")
+                .gender("female")
+                .age(20)
+                .email("a@b.com")
+                .phone("12345678901")
+                .vote(10)
+                .build();
+        userRepository.save(userEntity2);
         RsEntity rsEntity = RsEntity.builder()
-                .eventName("1")
-                .keyword("key")
-                .userId("0")
+                .eventName("第一条事件")
+                .keyword("无")
+                .userId("1")
                 .build();
         rsRepository.save(rsEntity);
-
+        RsEntity rsEntity2 = RsEntity.builder()
+                .eventName("第二条事件")
+                .keyword("无")
+                .userId("2")
+                .build();
+        rsRepository.save(rsEntity2);
+    }
+    @Test
+    void shouldAddOneRsEvent() throws Exception {
+//        String requestJson = "{\"eventName\":\"第四条事件\"," +
+//                " \"keyword\":\"无\"," +
+//                "\"user\" :{\"user_name\":\"Lily4\", \"user_gender\":\"male\"," +
+//                " \"user_age\":22, \"user_email\":\"d@b.com\", \"user_phone\":\"12345678904\"}}";
+        RsEvent rsEntity = RsEvent.builder()
+                .eventName("第三条事件")
+                .keyword("无")
+                .userId("1")
+                .build();
+        String requestJson = objectMapper.writeValueAsString(rsEntity);
+        mockMvc.perform(post("/rs/event")
+                .content(requestJson).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(header().string("index", String.valueOf(rsRepository.findAll().size())))
+                .andExpect(status().isCreated());
         mockMvc.perform(get("/rs/list"))
                 .andExpect(jsonPath("$[0].eventName", is("第一条事件")))
                 .andExpect(jsonPath("$[0].keyword", is("无")))
@@ -57,9 +97,27 @@ class RsControllerTest {
                 .andExpect(jsonPath("$[1].keyword", is("无")))
                 .andExpect(jsonPath("$[2].eventName", is("第三条事件")))
                 .andExpect(jsonPath("$[2].keyword", is("无")))
-                .andExpect(jsonPath("$[2]", not(hasKey("user"))))
                 .andExpect(status().isOk());
     }
+//    @Test
+//    void shouldGetRsList() throws Exception {
+//        RsEntity rsEntity = RsEntity.builder()
+//                .eventName("1")
+//                .keyword("key")
+//                .userId("0")
+//                .build();
+//        rsRepository.save(rsEntity);
+//
+//        mockMvc.perform(get("/rs/list"))
+//                .andExpect(jsonPath("$[0].eventName", is("第一条事件")))
+//                .andExpect(jsonPath("$[0].keyword", is("无")))
+//                .andExpect(jsonPath("$[1].eventName", is("第二条事件")))
+//                .andExpect(jsonPath("$[1].keyword", is("无")))
+//                .andExpect(jsonPath("$[2].eventName", is("第三条事件")))
+//                .andExpect(jsonPath("$[2].keyword", is("无")))
+//                .andExpect(jsonPath("$[2]", not(hasKey("user"))))
+//                .andExpect(status().isOk());
+//    }
 
 //    @Test
 //    void shouldGetRsListBetween() throws Exception {
@@ -73,53 +131,7 @@ class RsControllerTest {
 //                .andExpect(status().isBadRequest());
 //    }
 
-//    @Test
-//    void shouldAddOneRsEvent() throws Exception {
-//        String requestJson = "{\"eventName\":\"第四条事件\"," +
-//                " \"keyword\":\"无\"," +
-//                "\"user\" :{\"user_name\":\"Lily4\", \"user_gender\":\"male\"," +
-//                " \"user_age\":22, \"user_email\":\"d@b.com\", \"user_phone\":\"12345678904\"}}";
-//        mockMvc.perform(post("/rs/event")
-//                .content(requestJson).contentType(MediaType.APPLICATION_JSON))
-//                .andExpect(header().string("index", String.valueOf(RsController.rsList.size() - 1)))
-//                .andExpect(status().isCreated());
-//        mockMvc.perform(get("/rs/list"))
-//                .andExpect(jsonPath("$[0].eventName", is("第一条事件")))
-//                .andExpect(jsonPath("$[0].keyword", is("无")))
-//                .andExpect(jsonPath("$[1].eventName", is("第二条事件")))
-//                .andExpect(jsonPath("$[1].keyword", is("无")))
-//                .andExpect(jsonPath("$[2].eventName", is("第三条事件")))
-//                .andExpect(jsonPath("$[2].keyword", is("无")))
-//                .andExpect(jsonPath("$[3].eventName", is("第四条事件")))
-//                .andExpect(jsonPath("$[3].keyword", is("无")))
-//                .andExpect(status().isOk());
-//        assertEquals(4, UserController.users.size());
-//        assertEquals("Lily3", UserController.users.get(2).getName());
-//        assertEquals("Lily4", UserController.users.get(3).getName());
-//
-//        String requestJson2 = "{\"eventName\":\"第五条事件\"," +
-//                " \"keyword\":\"无\"," +
-//                "\"user\" :{\"user_name\":\"Lily4\", \"user_gender\":\"male\", \"user_age\":22, \"user_email\":\"d@b.com\", \"user_phone\":\"12345678904\"}}";
-//
-//        mockMvc.perform(post("/rs/event")
-//                .content(requestJson2).contentType(MediaType.APPLICATION_JSON))
-//                .andExpect(header().string("index", String.valueOf(RsController.rsList.size() - 1)))
-//                .andExpect(status().isCreated());
-//        mockMvc.perform(get("/rs/list"))
-//                .andExpect(jsonPath("$[4].eventName", is("第五条事件")))
-//                .andExpect(jsonPath("$[4].keyword", is("无")))
-//                .andExpect(status().isOk());
-//        assertEquals(4, UserController.users.size());
-//
-//        String requestJson3 = "{\"eventName\":\"第五条事件\"," +
-//                " \"keyword\":\"无\"," +
-//                "\"user\" :{\"user_name\":\"Lily4\", \"user_gender\":\"male\", \"user_age\":10, \"user_email\":\"d@b.com\", \"user_phone\":\"12345678904\"}}";
-//
-//        mockMvc.perform(post("/rs/event")
-//                .content(requestJson3).contentType(MediaType.APPLICATION_JSON))
-//                .andExpect(jsonPath("$.error", is("invalid param")))
-//                .andExpect(status().isBadRequest());
-//    }
+
 
 //    @Test
 //    void shouldGetOneRsEvent() throws Exception {

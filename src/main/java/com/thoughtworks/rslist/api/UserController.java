@@ -27,6 +27,7 @@ public class UserController {
     }
 
     @PostMapping("/user")
+    //    其中user需要是已注册用户，否则添加失败返回400
     public ResponseEntity<String> register(@RequestBody @Valid User user, BindingResult result) throws InvalidParamException {
         if (result.hasErrors()) {
             throw new InvalidParamException("invalid user");

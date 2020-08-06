@@ -29,6 +29,22 @@ public class RsController {
         this.rsRepository = rsRepository;
     }
 
+    @PostMapping("/rs/event")
+    public ResponseEntity createRsEvent(@RequestBody @Valid RsEvent rsEvent, BindingResult result) throws InvalidParamException {
+        if (result.hasErrors()) {
+            throw new InvalidParamException("invalid param");
+        }
+        RsEntity rsEntity = RsEntity.builder()
+                .eventName(rsEvent.getEventName())
+                .keyword(rsEvent.getKeyword())
+                .userId(rsEvent.getUserId())
+                .build();
+        rsRepository.save(rsEntity);
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("index", String.valueOf(rsRepository.findAll().size()));
+        return new ResponseEntity(headers, HttpStatus.CREATED);
+    }
+
     @GetMapping("/rs/list")
     public ResponseEntity<List<RsEntity>> getRsListBetween(@RequestParam(required = false) Integer start,
                                                            @RequestParam(required = false) Integer end) throws InvalidParamException {
@@ -38,27 +54,9 @@ public class RsController {
             }
             return ResponseEntity.ok(rsRepository.findAll().subList(start-1, end));
         }
-
-
         return ResponseEntity.ok(rsRepository.findAll());
     }
-
-//    @PostMapping("/rs/event")
-//    public ResponseEntity createRsEvent(@RequestBody @Valid RsEvent rsEvent, BindingResult result) throws InvalidParamException {
-//        if (result.hasErrors()) {
-//            throw new InvalidParamException("invalid param");
-//        }
-//        rsRepository.save(new RsEntity(rsEvent));
-//        if (!userRepository.findAll().contains(userId)) {
-//            UserEntity userEntity = UserEntity.builder()
-//                    .name();
-//            userRepository.save(userEntity);
-//        }
-//        HttpHeaders headers = new HttpHeaders();
-//        headers.set("index", String.valueOf(rsRepository.findAll().size()));
-//        return new ResponseEntity(headers, HttpStatus.CREATED);
-//    }
-
+//
 //    @GetMapping("/rs/{index}")
 //    public ResponseEntity<Optional<RsEntity>> getRsListByIndex(@PathVariable Integer index) throws InvalidParamException {
 //        if (index < 0 || index > rsRepository.findAll().size()) {
