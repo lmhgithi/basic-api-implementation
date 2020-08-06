@@ -41,7 +41,6 @@ class RsControllerTest {
     public void init() {
         userRepository.deleteAll();
         rsRepository.deleteAll();
-        userRepository.deleteAll();
         UserEntity userEntity = UserEntity.builder()
                 .name("Lily")
                 .gender("female")

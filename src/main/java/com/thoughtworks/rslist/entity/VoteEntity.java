@@ -20,8 +20,12 @@ public class VoteEntity {
     private Integer voteId;
     private LocalTime localTime;
     private int voteNum;
+
     @ManyToOne
-    private Integer rsId;
+    @JoinColumn(name = "rsId")
+    private RsEntity rs;
+
     @ManyToOne
-    private String userId;
+    @JoinColumn(name = "userId")
+    private UserEntity user;
 }
