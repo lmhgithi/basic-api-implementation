@@ -10,10 +10,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.ArrayList;
@@ -31,7 +28,7 @@ public class UserController {
 
     @PostMapping("/user")
     public ResponseEntity<String> register(@RequestBody @Valid User user, BindingResult result) throws InvalidParamException {
-        if(result.hasErrors()){
+        if (result.hasErrors()) {
             throw new InvalidParamException("invalid user");
         }
         UserEntity userEntity = UserEntity.builder()
@@ -52,5 +49,13 @@ public class UserController {
     @GetMapping("/user/getAll")
     public ResponseEntity<List<UserEntity>> getAllUsers() {
         return ResponseEntity.ok(userRepository.findAll());
+    }
+
+    @DeleteMapping("/user/{index}")
+    public ResponseEntity deleteUser(@PathVariable Integer index) throws InvalidParamException {
+        if(index<=0 || index >userRepository.findAll().size())
+            throw new InvalidParamException("Invalid delete index");
+        userRepository.deleteById(index);
+        return ResponseEntity.ok().build();
     }
 }

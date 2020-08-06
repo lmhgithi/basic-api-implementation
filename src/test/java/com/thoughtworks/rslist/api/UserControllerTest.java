@@ -17,8 +17,7 @@ import java.util.List;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
@@ -33,6 +32,24 @@ class UserControllerTest {
     @BeforeEach
     void setup() {
         userRepository.deleteAll();
+        UserEntity userEntity = UserEntity.builder()
+                .name("Lily")
+                .gender("female")
+                .age(18)
+                .email("a@b.com")
+                .phone("12345678901")
+                .vote(10)
+                .build();
+        userRepository.save(userEntity);
+        UserEntity userEntity2 = UserEntity.builder()
+                .name("Lily2")
+                .gender("female")
+                .age(20)
+                .email("a@b.com")
+                .phone("12345678901")
+                .vote(10)
+                .build();
+        userRepository.save(userEntity2);
     }
 
     @Test
@@ -56,16 +73,6 @@ class UserControllerTest {
 
     @Test
     void shouldGetAllUsers() throws Exception {
-        UserEntity userEntity = UserEntity.builder()
-                .name("Lily")
-                .gender("female")
-                .age(18)
-                .email("a@b.com")
-                .phone("12345678901")
-                .vote(10)
-                .build();
-        userRepository.save(userEntity);
-        userRepository.save(userEntity);
         mockMvc.perform(get("/user/getAll"))
                 .andExpect(jsonPath("$[0].name", is("Lily")))
                 .andExpect(jsonPath("$[0].gender", is("female")))
@@ -76,6 +83,14 @@ class UserControllerTest {
                 .andExpect(status().isOk());
     }
 
+    @Test
+    void shouldDeleteUser() throws Exception {
+        mockMvc.perform(delete("/user/1"))
+                .andExpect(status().isOk());
+
+        mockMvc.perform(get("/user/getAll"))
+                .andExpect(jsonPath("$.*", hasSize(1)));
+    }
 //    @Test
 //    void nameShouldNotLongerThan8() throws Exception {
 //        User user = new User("Lily56789", "male", 18, "a@b.com", "12345678901");
