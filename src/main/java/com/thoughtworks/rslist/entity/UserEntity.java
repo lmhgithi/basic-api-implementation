@@ -21,7 +21,6 @@ public class UserEntity {
     @Id
     @GeneratedValue
     private Integer userId;
-//    @Column(name = "name")
     private String name;
     private String gender;
     private int age;

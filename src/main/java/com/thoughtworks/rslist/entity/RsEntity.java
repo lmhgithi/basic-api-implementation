@@ -22,6 +22,6 @@ public class RsEntity {
     private Integer rsId;
     private String eventName;
     private String keyword;
-    private String userId;
+    private Integer userId;
     private int voteNum;
 }

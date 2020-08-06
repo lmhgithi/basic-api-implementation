@@ -91,22 +91,23 @@ class UserControllerTest {
 
     @Test
     void shouldDeleteRsWhenDeleteUser() throws Exception {
-        int idToDelete = userRepository.findAll().get(1).getUserId();
+        int idToDelete1 = userRepository.findAll().get(0).getUserId();
+        int idToDelete2 = userRepository.findAll().get(1).getUserId();
         RsEntity rsEntity = RsEntity.builder()
                 .eventName("第一条事件")
                 .keyword("无")
-                .userId("1")
+                .userId(idToDelete1)
                 .build();
         rsRepository.save(rsEntity);
         RsEntity rsEntity2 = RsEntity.builder()
                 .eventName("第二条事件")
                 .keyword("无")
-                .userId(String.valueOf(idToDelete))
+                .userId(idToDelete2)
                 .build();
         rsRepository.save(rsEntity2);
 
         int before = rsRepository.findAll().size();
-        mockMvc.perform(delete("/user/" + idToDelete))
+        mockMvc.perform(delete("/user/" + idToDelete1))
                 .andExpect(status().isOk());
         int after = rsRepository.findAll().size();
         assertEquals(before, after + 1);

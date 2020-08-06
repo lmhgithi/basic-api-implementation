@@ -17,16 +17,16 @@ public class RsEvent {
     @NotNull
     private String keyword;
     @NotNull
-    private String userId;
+    private Integer userId;
     private int voteNum;
 
     //    @JsonIgnore
-    public String getUserId() {
+    public Integer getUserId() {
         return userId;
     }
 
     //    @JsonProperty
-    public void setUserId(String userId) {
+    public void setUserId(Integer userId) {
         this.userId = userId;
     }
 }

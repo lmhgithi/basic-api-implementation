@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.*;
+import java.security.Timestamp;
 import java.time.LocalTime;
 import java.util.Locale;
 
@@ -17,6 +18,6 @@ import java.util.Locale;
 public class Vote {
     private int userId;
     private int rsId;
-    private LocalTime localTime;
+    private Timestamp timestamp;
     private int voteNum;
 }

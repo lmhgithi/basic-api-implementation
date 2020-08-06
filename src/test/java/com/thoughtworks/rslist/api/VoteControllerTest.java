@@ -9,6 +9,7 @@ import com.thoughtworks.rslist.entity.VoteEntity;
 import com.thoughtworks.rslist.repository.RsRepository;
 import com.thoughtworks.rslist.repository.UserRepository;
 import com.thoughtworks.rslist.repository.VoteRepository;
+import org.apache.tomcat.jni.Time;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,8 +18,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.time.LocalTime;
 
+import java.sql.Timestamp;
+import java.time.LocalTime;
+import java.util.Date;
+
+import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -50,10 +55,11 @@ class VoteControllerTest {
                 .vote(10)
                 .build();
         userRepository.save(userEntity);
+        int idOfUser = userRepository.findAll().get(0).getUserId();
         RsEntity rsEntity = RsEntity.builder()
                 .eventName("第一条事件")
                 .keyword("无")
-                .userId("1")
+                .userId(idOfUser)
                 .build();
         rsRepository.save(rsEntity);
     }
@@ -87,4 +93,25 @@ class VoteControllerTest {
                 .andExpect(status().isBadRequest());
     }
 
+    @Test
+    void shouldGetVoteBetweenTime() throws Exception {
+        Timestamp start = new Timestamp(System.currentTimeMillis());
+        VoteEntity vote = VoteEntity.builder()
+                .voteNum(2)
+                .timestamp(new Timestamp(System.currentTimeMillis()))
+                .rs(rsRepository.findAll().get(0))
+                .user(userRepository.findAll().get(0)).build();
+        voteRepository.save(vote);
+        VoteEntity vote2 = VoteEntity.builder()
+                .voteNum(3)
+                .timestamp(new Timestamp(System.currentTimeMillis()))
+                .rs(rsRepository.findAll().get(0))
+                .user(userRepository.findAll().get(0)).build();
+        voteRepository.save(vote2);
+
+        Timestamp end = new Timestamp(System.currentTimeMillis());
+        mockMvc.perform(get("/rs/vote?start=" + start + "&end=" + end))
+                .andExpect(jsonPath("$", hasSize(2)))
+                .andExpect(status().isOk());
+    }
 }

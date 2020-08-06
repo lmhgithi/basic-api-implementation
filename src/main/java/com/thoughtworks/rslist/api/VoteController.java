@@ -10,12 +10,15 @@ import com.thoughtworks.rslist.repository.UserRepository;
 import com.thoughtworks.rslist.repository.VoteRepository;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.sql.Timestamp;
 import java.time.LocalTime;
+import java.util.List;
 
 
 @RestController
@@ -38,7 +41,7 @@ public class VoteController {
         }
         if(userRepository.findById(vote.getUserId()).get().getVote() >= vote.getVoteNum() ){
             VoteEntity voteEntity = VoteEntity.builder()
-                    .localTime(LocalTime.now())
+                    .timestamp(new Timestamp(System.currentTimeMillis()))
                     .voteNum(vote.getVoteNum())
                     .rs(rsRepository.findById(rsEventId).get())
                     .user(userRepository.findById(vote.getUserId()).get())
@@ -55,6 +58,13 @@ public class VoteController {
         HttpHeaders headers = new HttpHeaders();
         headers.set("index", String.valueOf(rsEventId));
         return new ResponseEntity(headers, HttpStatus.CREATED);
+    }
+
+    @GetMapping("rs/vote")
+    public ResponseEntity<List<VoteEntity>> getVoteBetweenTime(@RequestParam Timestamp start, @RequestParam Timestamp end){
+        List<VoteEntity> votes = voteRepository.findByTimestampBetween(start, end);
+
+        return ResponseEntity.ok(votes);
     }
 
 }
