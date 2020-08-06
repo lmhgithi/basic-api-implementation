@@ -127,7 +127,35 @@ class RsControllerTest {
                 .andExpect(status().isBadRequest());
     }
 
+    @Test
+    void shouldModifyRsEventOptional() throws Exception {
+        int idToModify = rsRepository.findAll().get(1).getRsId();
+        String originKeyword = rsRepository.findById(idToModify).get().getKeyword();
 
+        RsEvent rsEvent = new RsEvent("已修改事件", null, "2");
+        String requestJson = objectMapper.writeValueAsString(rsEvent);
+        mockMvc.perform(patch("/rs/" + idToModify)
+                .content(requestJson).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(header().string("index", String.valueOf(idToModify)))
+                .andExpect(status().isOk());
+
+        mockMvc.perform(get("/rs/" + idToModify))
+                .andExpect(jsonPath("$.eventName", is("已修改事件")))
+                .andExpect(jsonPath("$.keyword", is(originKeyword)))
+                .andExpect(status().isOk());
+
+        RsEvent rsEvent2 = new RsEvent(null, "已修改分类", "2");
+        String requestJson2 = objectMapper.writeValueAsString(rsEvent2);
+        mockMvc.perform(patch("/rs/" + idToModify)
+                .content(requestJson2).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(header().string("index", String.valueOf(idToModify)))
+                .andExpect(status().isOk());
+
+        mockMvc.perform(get("/rs/" + idToModify))
+                .andExpect(jsonPath("$.eventName", is("已修改事件")))
+                .andExpect(jsonPath("$.keyword", is("已修改分类")))
+                .andExpect(status().isOk());
+    }
 //    @Test
 //    void shouldGetRsList() throws Exception {
 //        RsEntity rsEntity = RsEntity.builder()

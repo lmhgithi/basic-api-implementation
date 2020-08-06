@@ -79,11 +79,15 @@ public class RsController {
 
         if (!rsEntity.isPresent()) {
             throw new InvalidParamException("id not exist");
-        } else if (!rsEntity.get().getUserId().equals(rsEvent.getUserId())){
+        } else if (!rsEntity.get().getUserId().equals(rsEvent.getUserId())) {
             throw new InvalidParamException("userId is not correct");
-        } else{
-            rsEntity.get().setEventName(rsEvent.getEventName());
-            rsEntity.get().setKeyword(rsEvent.getKeyword());
+        } else {
+            if (rsEvent.getEventName() != null) {
+                rsEntity.get().setEventName(rsEvent.getEventName());
+            }
+            if (rsEvent.getKeyword() != null) {
+                rsEntity.get().setKeyword(rsEvent.getKeyword());
+            }
             rsEntity.get().setUserId(rsEvent.getUserId());
             rsRepository.save(rsEntity.get());
         }
