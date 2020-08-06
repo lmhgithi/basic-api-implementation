@@ -1,45 +1,31 @@
 package com.thoughtworks.rslist.domain;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotNull;
+
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@Data
 public class RsEvent {
-    @NotNull private String eventName;
-    @NotNull private String keyword;
-    @NotNull private String userId;
+    @NotNull
+    private String eventName;
+    @NotNull
+    private String keyword;
+    @NotNull
+    private String userId;
+    private int voteNum;
 
-    public RsEvent() {
-    }
-
-    public RsEvent(String eventName, String keyword, String userId) {
-        this.eventName = eventName;
-        this.keyword = keyword;
-        this.userId = userId;
-    }
-
-    public String getEventName() {
-        return eventName;
-    }
-
-    public void setEventName(String eventName) {
-        this.eventName = eventName;
-    }
-
-    public String getKeyword() {
-        return keyword;
-    }
-
-    public void setKeyword(String keyword) {
-        this.keyword = keyword;
-    }
-
-//    @JsonIgnore
+    //    @JsonIgnore
     public String getUserId() {
         return userId;
     }
 
-//    @JsonProperty
+    //    @JsonProperty
     public void setUserId(String userId) {
         this.userId = userId;
     }

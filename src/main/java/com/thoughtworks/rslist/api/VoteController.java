@@ -43,6 +43,10 @@ public class VoteController {
                     .rs(rsRepository.findById(rsEventId).get())
                     .user(userRepository.findById(vote.getUserId()).get())
                     .build();
+
+            RsEntity rsEntity = rsRepository.findById(rsEventId).get();
+            rsEntity.setVoteNum(vote.getVoteNum() + rsEntity.getVoteNum());
+            rsRepository.save(rsEntity);
             voteRepository.save(voteEntity);
         }else{
             throw new InvalidParamException("votes is not enough");

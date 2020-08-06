@@ -97,12 +97,12 @@ public class RsController {
     }
 
 
-//
-//    @PostMapping("/rs/delete/{index}")
-//    public ResponseEntity deleteRsEvent(@PathVariable int index) {
-//        rsList.remove(index);
-//        HttpHeaders headers = new HttpHeaders();
-//        headers.set("index", String.valueOf(index));
-//        return new ResponseEntity(headers, HttpStatus.CREATED);
-//    }
+
+    @DeleteMapping("/rs/delete/{index}")
+    public ResponseEntity deleteRsEvent(@PathVariable int index) {
+        rsRepository.deleteById(index);
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("index", String.valueOf(index));
+        return new ResponseEntity(headers, HttpStatus.CREATED);
+    }
 }

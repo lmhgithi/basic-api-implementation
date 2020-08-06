@@ -23,4 +23,5 @@ public class RsEntity {
     private String eventName;
     private String keyword;
     private String userId;
+    private int voteNum;
 }
