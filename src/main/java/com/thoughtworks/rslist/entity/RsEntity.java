@@ -7,10 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.Valid;
 
 @Entity
@@ -22,8 +19,10 @@ import javax.validation.Valid;
 public class RsEntity {
     @Id
     @GeneratedValue
-    private Integer id;
+    private Integer rsId;
     private String eventName;
     private String keyword;
     private String userId;
+    @ManyToOne
+    private UserEntity user;
 }

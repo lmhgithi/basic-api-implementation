@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
@@ -19,7 +20,7 @@ import javax.validation.constraints.*;
 public class UserEntity {
     @Id
     @GeneratedValue
-    private Integer id;
+    private Integer userId;
 //    @Column(name = "name")
     private String name;
     private String gender;
@@ -27,4 +28,6 @@ public class UserEntity {
     private String email;
     private String phone;
     private int vote = 10;
+    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "userId")
+    private List<RsEntity> rsEntity;
 }

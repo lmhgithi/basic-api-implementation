@@ -3,7 +3,9 @@ package com.thoughtworks.rslist.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.thoughtworks.rslist.domain.User;
+import com.thoughtworks.rslist.entity.RsEntity;
 import com.thoughtworks.rslist.entity.UserEntity;
+import com.thoughtworks.rslist.repository.RsRepository;
 import com.thoughtworks.rslist.repository.UserRepository;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +30,8 @@ class UserControllerTest {
     MockMvc mockMvc;
     @Autowired
     UserRepository userRepository;
+    @Autowired
+    RsRepository rsRepository;
 
     @BeforeEach
     void setup() {
@@ -78,10 +82,33 @@ class UserControllerTest {
     @Test
     void shouldDeleteUser() throws Exception {
         int before = userRepository.findAll().size();
-        int idToDelete = userRepository.findAll().get(1).getId();
+        int idToDelete = userRepository.findAll().get(1).getUserId();
         mockMvc.perform(delete("/user/" + idToDelete))
                 .andExpect(status().isOk());
         int after = userRepository.findAll().size();
+        assertEquals(before, after + 1);
+    }
+
+    @Test
+    void shouldDeleteRsWhenDeleteUser() throws Exception {
+        int idToDelete = userRepository.findAll().get(1).getUserId();
+        RsEntity rsEntity = RsEntity.builder()
+                .eventName("第一条事件")
+                .keyword("无")
+                .userId("1")
+                .build();
+        rsRepository.save(rsEntity);
+        RsEntity rsEntity2 = RsEntity.builder()
+                .eventName("第二条事件")
+                .keyword("无")
+                .userId(String.valueOf(idToDelete))
+                .build();
+        rsRepository.save(rsEntity2);
+
+        int before = rsRepository.findAll().size();
+        mockMvc.perform(delete("/user/" + idToDelete))
+                .andExpect(status().isOk());
+        int after = rsRepository.findAll().size();
         assertEquals(before, after + 1);
     }
 
