@@ -2,7 +2,10 @@ package com.thoughtworks.rslist.api;
 
 import com.thoughtworks.rslist.domain.RsEvent;
 import com.thoughtworks.rslist.domain.User;
+import com.thoughtworks.rslist.entity.UserEntity;
 import com.thoughtworks.rslist.exception.InvalidParamException;
+import com.thoughtworks.rslist.repository.RsRepository;
+import com.thoughtworks.rslist.repository.UserRepository;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,21 +21,36 @@ import java.util.List;
 
 @RestController
 public class UserController {
-    public static List<User> users = new ArrayList<>();
+    private final UserRepository userRepository;
+    private final RsRepository rsRepository;
+
+    public UserController(UserRepository userRepository, RsRepository rsRepository) {
+        this.userRepository = userRepository;
+        this.rsRepository = rsRepository;
+    }
 
     @PostMapping("/user")
-    public static ResponseEntity<String> register(@RequestBody @Valid User user, BindingResult result) throws InvalidParamException {
+    public ResponseEntity<String> register(@RequestBody @Valid User user, BindingResult result) throws InvalidParamException {
         if(result.hasErrors()){
             throw new InvalidParamException("invalid user");
         }
-        users.add(user);
+        UserEntity userEntity = UserEntity.builder()
+                .name(user.getName())
+                .gender(user.getGender())
+                .age(user.getAge())
+                .email(user.getEmail())
+                .phone(user.getPhone())
+                .vote(10)
+                .build();
+
+        userRepository.save(userEntity);
         HttpHeaders headers = new HttpHeaders();
-        headers.set("index", String.valueOf(users.size() - 1));
+        headers.set("index", String.valueOf(userRepository.findAll().size() - 1));
         return new ResponseEntity(headers, HttpStatus.CREATED);
     }
 
     @GetMapping("/user/getAll")
-    public static ResponseEntity<List<User>> getAllUsers() {
-        return ResponseEntity.ok(users);
+    public ResponseEntity<List<UserEntity>> getAllUsers() {
+        return ResponseEntity.ok(userRepository.findAll());
     }
 }

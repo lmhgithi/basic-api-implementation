@@ -4,20 +4,21 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import java.util.Optional;
 
 public class RsEvent {
-    private String eventName;
-    private String keyword;
-    private @Valid User user;
+    @NotNull private String eventName;
+    @NotNull private String keyword;
+    @NotNull private String userId;
 
     public RsEvent() {
     }
 
-    public RsEvent(String eventName, String keyword, User user) {
+    public RsEvent(String eventName, String keyword, String userId) {
         this.eventName = eventName;
         this.keyword = keyword;
-        this.user = user;
+        this.userId = userId;
     }
 
     public String getEventName() {
@@ -36,13 +37,13 @@ public class RsEvent {
         this.keyword = keyword;
     }
 
-    @JsonIgnore
-    public User getUser() {
-        return user;
-    }
-
-    @JsonProperty
-    public void setUser(User user) {
-        this.user = user;
-    }
+//    @JsonIgnore
+//    public User getUser() {
+//        return user;
+//    }
+//
+//    @JsonProperty
+//    public void setUser(User user) {
+//        this.user = user;
+//    }
 }
