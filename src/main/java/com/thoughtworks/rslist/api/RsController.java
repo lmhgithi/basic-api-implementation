@@ -79,7 +79,9 @@ public class RsController {
 
         if (!rsEntity.isPresent()) {
             throw new InvalidParamException("id not exist");
-        }  else{
+        } else if (!rsEntity.get().getUserId().equals(rsEvent.getUserId())){
+            throw new InvalidParamException("userId is not correct");
+        } else{
             rsEntity.get().setEventName(rsEvent.getEventName());
             rsEntity.get().setKeyword(rsEvent.getKeyword());
             rsEntity.get().setUserId(rsEvent.getUserId());

@@ -114,6 +114,19 @@ class RsControllerTest {
                 .andExpect(status().isOk());
     }
 
+    @Test
+    void shouldNotModifyRsEventWhenUserIdNotEqual() throws Exception {
+        int idToModify = rsRepository.findAll().get(1).getRsId();
+        RsEvent rsEvent = new RsEvent("已修改事件", "已修改分类", "3");
+        ObjectMapper objMapper = new ObjectMapper();
+        String requestJson = objMapper.writeValueAsString(rsEvent);
+
+        mockMvc.perform(patch("/rs/" + idToModify)
+                .content(requestJson).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.error", is("userId is not correct")))
+                .andExpect(status().isBadRequest());
+    }
+
 
 //    @Test
 //    void shouldGetRsList() throws Exception {
