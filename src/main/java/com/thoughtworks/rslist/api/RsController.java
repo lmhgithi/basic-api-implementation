@@ -52,28 +52,45 @@ public class RsController {
             if (start < 0 || end > rsRepository.findAll().size()) {
                 throw new InvalidParamException("invalid request param");
             }
-            return ResponseEntity.ok(rsRepository.findAll().subList(start-1, end));
+            return ResponseEntity.ok(rsRepository.findAll().subList(start - 1, end));
         }
         return ResponseEntity.ok(rsRepository.findAll());
     }
-//
-//    @GetMapping("/rs/{index}")
-//    public ResponseEntity<Optional<RsEntity>> getRsListByIndex(@PathVariable Integer index) throws InvalidParamException {
-//        if (index < 0 || index > rsRepository.findAll().size()) {
-//            throw new InvalidParamException("invalid index");
-//        }
-//        return ResponseEntity.ok(rsRepository.findById(index));
-//    }
 
-//    @PostMapping("/rs/modify/{index}")
-//    public ResponseEntity modifyRsEvent(@PathVariable int index, @RequestBody RsEvent rsEvent) {
-//        rsList.get(index).setEventName(rsEvent.getEventName());
-//        rsList.get(index).setKeyword(rsEvent.getKeyword());
-//
-//        HttpHeaders headers = new HttpHeaders();
-//        headers.set("index", String.valueOf(index));
-//        return new ResponseEntity(headers, HttpStatus.CREATED);
-//    }
+    @GetMapping("/rs/{index}")
+    public ResponseEntity<RsEntity> getRsListBetween(@PathVariable Integer index) throws InvalidParamException {
+        if (index < 1) {
+            throw new InvalidParamException("invalid index");
+        }
+        Optional<RsEntity> modifyRsEvent = rsRepository.findById(index);
+        if (modifyRsEvent.isPresent()) {
+            return ResponseEntity.ok(modifyRsEvent.get());
+        } else {
+            throw new InvalidParamException("id not exist");
+        }
+    }
+
+    @PatchMapping("/rs/{index}")
+    public ResponseEntity modifyRsEventByIndex(@PathVariable Integer index, @RequestBody RsEvent rsEvent) throws InvalidParamException {
+        if (index < 1) {
+            throw new InvalidParamException("invalid index");
+        }
+        Optional<RsEntity> rsEntity = rsRepository.findById(index);
+
+        if (!rsEntity.isPresent()) {
+            throw new InvalidParamException("id not exist");
+        }  else{
+            rsEntity.get().setEventName(rsEvent.getEventName());
+            rsEntity.get().setKeyword(rsEvent.getKeyword());
+            rsEntity.get().setUserId(rsEvent.getUserId());
+            rsRepository.save(rsEntity.get());
+        }
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("index", String.valueOf(index));
+        return new ResponseEntity(headers, HttpStatus.OK);
+    }
+
+
 //
 //    @PostMapping("/rs/delete/{index}")
 //    public ResponseEntity deleteRsEvent(@PathVariable int index) {

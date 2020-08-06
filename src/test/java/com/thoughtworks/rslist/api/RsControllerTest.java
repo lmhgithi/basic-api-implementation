@@ -22,8 +22,7 @@ import java.util.LinkedList;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 //@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
@@ -76,10 +75,6 @@ class RsControllerTest {
     }
     @Test
     void shouldAddOneRsEvent() throws Exception {
-//        String requestJson = "{\"eventName\":\"第四条事件\"," +
-//                " \"keyword\":\"无\"," +
-//                "\"user\" :{\"user_name\":\"Lily4\", \"user_gender\":\"male\"," +
-//                " \"user_age\":22, \"user_email\":\"d@b.com\", \"user_phone\":\"12345678904\"}}";
         RsEvent rsEntity = RsEvent.builder()
                 .eventName("第三条事件")
                 .keyword("无")
@@ -99,6 +94,27 @@ class RsControllerTest {
                 .andExpect(jsonPath("$[2].keyword", is("无")))
                 .andExpect(status().isOk());
     }
+
+    @Test
+    void shouldModifyRsEvent() throws Exception {
+        int idToModify = rsRepository.findAll().get(1).getRsId();
+        RsEvent rsEvent = new RsEvent("已修改事件", "已修改分类", "2");
+        ObjectMapper objMapper = new ObjectMapper();
+        String requestJson = objMapper.writeValueAsString(rsEvent);
+
+        mockMvc.perform(patch("/rs/" + idToModify)
+                .content(requestJson).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(header().string("index", String.valueOf(idToModify)))
+                .andExpect(status().isOk());
+
+        mockMvc.perform(get("/rs/" + idToModify))
+                .andExpect(jsonPath("$.eventName", is("已修改事件")))
+                .andExpect(jsonPath("$.keyword", is("已修改分类")))
+                .andExpect(jsonPath("$.userId", is("2")))
+                .andExpect(status().isOk());
+    }
+
+
 //    @Test
 //    void shouldGetRsList() throws Exception {
 //        RsEntity rsEntity = RsEntity.builder()
@@ -149,23 +165,6 @@ class RsControllerTest {
 //                .andExpect(status().isBadRequest());
 //    }
 //
-//    @Test
-//    void shouldModifyRsEvent() throws Exception {
-////        String requestJson = "{\"eventName\":\"已修改事件\",\"keyword\":\"已修改分类\"}";
-//        RsEvent rsEvent = new RsEvent("已修改事件", "已修改分类", null);
-//        ObjectMapper objMapper = new ObjectMapper();
-//        String requestJson = objMapper.writeValueAsString(rsEvent);
-//
-//        mockMvc.perform(post("/rs/modify/1")
-//                .content(requestJson).contentType(MediaType.APPLICATION_JSON))
-//                .andExpect(header().string("index", String.valueOf(1)))
-//                .andExpect(status().isCreated());
-//
-//        mockMvc.perform(get("/rs/1"))
-//                .andExpect(jsonPath("$.eventName", is("已修改事件")))
-//                .andExpect(jsonPath("$.keyword", is("已修改分类")))
-//                .andExpect(status().isOk());
-//    }
 //
 //    @Test
 //    void shouldDeleteRsEvent() throws Exception {
