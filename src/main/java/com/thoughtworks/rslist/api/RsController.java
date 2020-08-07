@@ -98,7 +98,7 @@ public class RsController {
 
 
 
-    @DeleteMapping("/rs/delete/{index}")
+    @DeleteMapping("/rs/{index}")
     public ResponseEntity deleteRsEvent(@PathVariable int index) {
         rsRepository.deleteById(index);
         HttpHeaders headers = new HttpHeaders();

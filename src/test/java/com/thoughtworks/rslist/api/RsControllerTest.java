@@ -224,7 +224,7 @@ class RsControllerTest {
     @Test
     void shouldDeleteRsEvent() throws Exception {
         int idToDelete = rsRepository.findAll().get(0).getRsId();
-        mockMvc.perform(delete("/rs/delete/" + idToDelete))
+        mockMvc.perform(delete("/rs/" + idToDelete))
                 .andExpect(header().string("index", String.valueOf(idToDelete)))
                 .andExpect(status().isCreated());
         mockMvc.perform(get("/rs/list"))

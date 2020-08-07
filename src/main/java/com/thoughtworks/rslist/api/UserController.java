@@ -49,7 +49,7 @@ public class UserController {
         return new ResponseEntity(headers, HttpStatus.CREATED);
     }
 
-    @GetMapping("/user/getAll")
+    @GetMapping("/user/list")
     public ResponseEntity<List<UserEntity>> getAllUsers() {
         return ResponseEntity.ok(userRepository.findAll());
     }

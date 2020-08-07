@@ -69,7 +69,7 @@ class UserControllerTest {
 
     @Test
     void shouldGetAllUsers() throws Exception {
-        mockMvc.perform(get("/user/getAll"))
+        mockMvc.perform(get("/user/list"))
                 .andExpect(jsonPath("$[0].name", is("Lily1")))
                 .andExpect(jsonPath("$[0].gender", is("female")))
                 .andExpect(jsonPath("$[0].age", is(18)))
