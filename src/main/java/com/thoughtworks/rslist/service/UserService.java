@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 
-@Service
+//@Service
 public class UserService {
 
     private final UserRepository userRepository;
